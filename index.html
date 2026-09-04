@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Quartiermeister — Первый причал</title>
+  <title>Quartiermeister — Команда и экспедиции</title>
   <style>
     *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#0c1e26;color:#f3ebd5;font-family:system-ui,sans-serif}
     canvas{display:block;width:100%;height:100%;outline:none}#loading{position:absolute;inset:0;display:grid;place-content:center;text-align:center;background:radial-gradient(ellipse at center,#20434a,#0c1e26 70%)}
@@ -15,12 +15,13 @@
   </style>
 </head>
 <body>
-  <canvas id="unity-canvas" tabindex="0" aria-label="Quartiermeister: пиратская гавань и команда"></canvas>
+  <canvas id="unity-canvas" tabindex="0" aria-label="Quartiermeister: пиратская команда и экспедиции"></canvas>
   <div id="loading"><div class="mark">Q /</div><h1 class="brand">QUARTIERMEISTER</h1><p class="tagline">КОРАБЛЬ — ЭТО КОМАНДА</p><progress id="progress" max="1" value="0"></progress><p id="status">Поднимаем паруса…</p><div id="error"></div></div>
   <div id="mobile">Для первого прототипа используйте компьютер и горизонтальное окно.</div>
   <script>
     const started = performance.now();
-    window.quartiermeisterMetrics = {version: '0.1.0', userAgent: navigator.userAgent, viewport: [innerWidth, innerHeight], errors: []};
+    const buildVersion = '0.2.0';
+    window.quartiermeisterMetrics = {version: buildVersion, userAgent: navigator.userAgent, viewport: [innerWidth, innerHeight], errors: []};
     window.quartiermeisterReady = () => {
       requestAnimationFrame(() => {
         window.quartiermeisterMetrics.firstFrameMs = Math.round(performance.now() - started);
@@ -40,14 +41,14 @@
     const canvas = document.getElementById('unity-canvas');
     canvas.addEventListener('webglcontextlost', () => showError('Графический контекст потерян. Перезагрузите страницу.'));
     const script = document.createElement('script');
-    script.src = 'Build/Web.loader.js';
+    script.src = 'Build/Web.loader.js?v=' + buildVersion;
     script.onerror = () => showError('Загрузчик игры недоступен. Проверьте соединение.');
     script.onload = () => createUnityInstance(canvas, {
-      dataUrl: 'Build/Web.data.unityweb',
-      frameworkUrl: 'Build/Web.framework.js.unityweb',
-      codeUrl: 'Build/Web.wasm.unityweb',
+      dataUrl: 'Build/Web.data.unityweb?v=' + buildVersion,
+      frameworkUrl: 'Build/Web.framework.js.unityweb?v=' + buildVersion,
+      codeUrl: 'Build/Web.wasm.unityweb?v=' + buildVersion,
       streamingAssetsUrl: 'StreamingAssets',
-      companyName: 'Third Half', productName: 'Quartiermeister', productVersion: '0.1.0',
+      companyName: 'Third Half', productName: 'Quartiermeister', productVersion: buildVersion,
       devicePixelRatio: Math.min(window.devicePixelRatio || 1, 1.5),
       showBanner: (message, type) => { if (type === 'error') showError(message); else console.warn(message); }
     }, progress => {
